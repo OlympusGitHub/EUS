@@ -11,6 +11,7 @@
 @interface OAI_Switch : UISegmentedControl
 
 @property (nonatomic, retain) NSString* elementName;
+@property (nonatomic, retain) NSString* strMySection;
 
 
 @end

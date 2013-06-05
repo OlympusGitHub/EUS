@@ -28,6 +28,9 @@
 #import "OAI_DropDownTable.h"
 #import "OAI_Switch.h"
 
+#import "NSString+Helpers.h"
+#import "UIButton+ResetProperties.h"
+
 
 
 @interface ViewController : UIViewController <UIWebViewDelegate, UITextViewDelegate, UITextFieldDelegate, MFMailComposeViewControllerDelegate, DropDownTableDelegate> {
@@ -64,6 +67,7 @@
     NSMutableArray* placedSections;
     NSMutableArray* placedRows;
     NSMutableArray* placedCells;
+    NSDictionary* dictAllElements;
     NSArray* table1StoredData;
     NSArray* table2StoredData;
     NSArray* table3StoredData;
@@ -110,7 +114,7 @@
     float doctorReimbursement;
     float anesthesiaReimbursement;
     
-    
+    NSString* strDefaultValue;
     
 }
 
@@ -129,6 +133,10 @@
 - (NSMutableDictionary*) getSectionProperties : (int) s;
 
 - (void) buildSections : (NSMutableDictionary* ) sectionProperties : (UIView* ) sectionWrapper;
+
+- (void) resetFormSection : (UIButton*) myButton;
+
+- (void) resetAll : (UIButton*) myButton;
 
 - (float) getTableWidth : (NSArray* ) thisTableData : (NSString*) strSection;
 

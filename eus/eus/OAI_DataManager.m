@@ -71,14 +71,33 @@
                                 OAI_TextField* thisTextField = (OAI_TextField*)[thisTableRowObjs objectAtIndex:o];
                                 
                                 NSMutableDictionary* thisTextFieldProps = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                        thisTextField, @"Element",
                                         thisTextField.elementName, @"Element Name",
                                         thisTextField.elementNumberType, @"Element Number Type",
-                                        thisTextField.text, @"Element Value", 
+                                        thisTextField.text, @"Element Value",
+                                        thisTextField.strMySection, @"Element Section",
                                 nil];
                                 
                                 [calculatorValues setObject:thisTextFieldProps forKey:thisTextField.elementName];
                                 
+                            } else if([[thisTableRowObjs objectAtIndex:o] isMemberOfClass:[OAI_Switch class]]) {
+                                
+                                OAI_Switch* swThisSwitch = (OAI_Switch*)[thisTableRowObjs objectAtIndex:o];
+                                
+                                NSString* strThisSwitchIndex = [NSString stringWithFormat:@"%i", swThisSwitch.selectedSegmentIndex];
+                                
+                                NSMutableDictionary* thisSwitchProps = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                                                        swThisSwitch, @"Element",
+                                                                        swThisSwitch.elementName, @"Element Name",
+                                                                        strThisSwitchIndex, @"Element Value",
+                                                                        swThisSwitch.strMySection, @"Element Section",
+                                                                        nil];
+                                
+                                [calculatorValues setObject:thisSwitchProps forKey:swThisSwitch.elementName];
+                                
+                                
                             }
+
                         }
                         
                     } else {
@@ -89,15 +108,17 @@
                             thisTextFieldValue = thisTextField.text;
                             
                             NSMutableDictionary* thisTextFieldProps = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                    thisTextField, @"Element", 
                                     thisTextField.elementName, @"Element Name",
                                     thisTextField.elementNumberType, @"Element Number Type",
                                     thisTextField.text, @"Element Value",
-                                                                       nil];
+                                    thisTextField.strMySection, @"Element Section",
+                                nil];
                             
                             [calculatorValues setObject:thisTextFieldProps forKey:thisTextField.elementName];
+                        
                         }
                     }
-                
                 }
             }
         }

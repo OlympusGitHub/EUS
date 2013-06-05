@@ -70,6 +70,8 @@
 		DB3F6C9F1703754300C291C5 /* Default-Portrait@2x~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = DB3F6C9E1703754300C291C5 /* Default-Portrait@2x~ipad.png */; };
 		DB3F6CA11703755800C291C5 /* eusCalculator.png in Resources */ = {isa = PBXBuildFile; fileRef = DB3F6CA01703755800C291C5 /* eusCalculator.png */; };
 		DB3F6CA31703755B00C291C5 /* eusCalculator@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB3F6CA21703755B00C291C5 /* eusCalculator@2x.png */; };
+		DB5AF95A174157830017BA7C /* NSString+Helpers.m in Sources */ = {isa = PBXBuildFile; fileRef = DB5AF959174157830017BA7C /* NSString+Helpers.m */; };
+		DBA0AC4117426A9C00E83149 /* UIButton+ResetProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = DBA0AC4017426A9C00E83149 /* UIButton+ResetProperties.m */; };
 		DBBF85141715E950004CB92B /* btnReload.png in Resources */ = {isa = PBXBuildFile; fileRef = DBBF85131715E950004CB92B /* btnReload.png */; };
 /* End PBXBuildFile section */
 
@@ -159,6 +161,10 @@
 		DB3F6C9E1703754300C291C5 /* Default-Portrait@2x~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait@2x~ipad.png"; sourceTree = "<group>"; };
 		DB3F6CA01703755800C291C5 /* eusCalculator.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eusCalculator.png; sourceTree = "<group>"; };
 		DB3F6CA21703755B00C291C5 /* eusCalculator@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "eusCalculator@2x.png"; sourceTree = "<group>"; };
+		DB5AF958174157830017BA7C /* NSString+Helpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+Helpers.h"; sourceTree = "<group>"; };
+		DB5AF959174157830017BA7C /* NSString+Helpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+Helpers.m"; sourceTree = "<group>"; };
+		DBA0AC3F17426A9C00E83149 /* UIButton+ResetProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIButton+ResetProperties.h"; sourceTree = "<group>"; };
+		DBA0AC4017426A9C00E83149 /* UIButton+ResetProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIButton+ResetProperties.m"; sourceTree = "<group>"; };
 		DBBF85131715E950004CB92B /* btnReload.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = btnReload.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -216,6 +222,7 @@
 		DB3F6C081703741B00C291C5 /* eus */ = {
 			isa = PBXGroup;
 			children = (
+				DBA0AC3E17426A7900E83149 /* Categories */,
 				DB3F6C2A1703747E00C291C5 /* html */,
 				DB3F6C291703747700C291C5 /* classes */,
 				DB3F6C281703747100C291C5 /* singletons */,
@@ -225,6 +232,7 @@
 				DB3F6C121703741B00C291C5 /* AppDelegate.m */,
 				DB3F6C1A1703741B00C291C5 /* ViewController.h */,
 				DB3F6C1B1703741B00C291C5 /* ViewController.m */,
+				DB3F6C4A170374A500C291C5 /* OAI_InfoButton.m */,
 				DB3F6C1D1703741B00C291C5 /* ViewController.xib */,
 				DB3F6C091703741B00C291C5 /* Supporting Files */,
 			);
@@ -324,7 +332,6 @@
 				DB3F6C47170374A500C291C5 /* OAI_ScrollView.h */,
 				DB3F6C48170374A500C291C5 /* OAI_ScrollView.m */,
 				DB3F6C49170374A500C291C5 /* OAI_InfoButton.h */,
-				DB3F6C4A170374A500C291C5 /* OAI_InfoButton.m */,
 				DB3F6C4B170374A500C291C5 /* OAI_Label.h */,
 				DB3F6C4C170374A500C291C5 /* OAI_Label.m */,
 				DB3F6C4D170374A500C291C5 /* OAI_Switch.h */,
@@ -341,6 +348,17 @@
 				DB3F6C81170374BF00C291C5 /* assumptions.html */,
 			);
 			name = html;
+			sourceTree = "<group>";
+		};
+		DBA0AC3E17426A7900E83149 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				DB5AF958174157830017BA7C /* NSString+Helpers.h */,
+				DB5AF959174157830017BA7C /* NSString+Helpers.m */,
+				DBA0AC3F17426A9C00E83149 /* UIButton+ResetProperties.h */,
+				DBA0AC4017426A9C00E83149 /* UIButton+ResetProperties.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -462,6 +480,8 @@
 				DB3F6C0F1703741B00C291C5 /* main.m in Sources */,
 				DB3F6C131703741B00C291C5 /* AppDelegate.m in Sources */,
 				DB3F6C1C1703741B00C291C5 /* ViewController.m in Sources */,
+				DB5AF95A174157830017BA7C /* NSString+Helpers.m in Sources */,
+				DBA0AC4117426A9C00E83149 /* UIButton+ResetProperties.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

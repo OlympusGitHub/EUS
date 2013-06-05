@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "OAI_TextField.h"
+#import "OAI_Switch.h"
 
 @interface OAI_DataManager : NSObject {
     

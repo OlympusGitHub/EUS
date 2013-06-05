@@ -19,6 +19,7 @@
 
 @property (nonatomic, retain) NSString* elementName;
 @property (nonatomic, retain) NSString* elementNumberType;
+@property (nonatomic, retain) NSString* strMySection;
 
 
 @end

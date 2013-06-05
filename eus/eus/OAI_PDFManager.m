@@ -89,7 +89,7 @@
         CGRect imgLogoFrame = CGRectMake(312-(imgLogo.size.width/2), (pageSize.height/3), imgLogo.size.width, imgLogo.size.height);
         [self drawImage:imgLogo :imgLogoFrame];
         
-        NSString* strPDFTitle = @"EUS Value Calculator Results For FACILITY NAME GOES HERE";
+        NSString* strPDFTitle = [NSString stringWithFormat:@"EUS Value Calculator Results For %@", _strFacilityName];
         textColor = [colorManager setColor:8 :16 :123];
         CGSize PDFTitleSize = [strPDFTitle sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
         CGRect PDFTitleFrame = CGRectMake((pageSize.width/2)-(PDFTitleSize.width/2), imgLogoFrame.origin.y + imgLogoFrame.size.height + 50.0, PDFTitleSize.width, PDFTitleSize.height);
@@ -100,23 +100,25 @@
         UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
         
         //add some intro text
-        NSString* introText = @"Following are the results of the downstream revenue model for FACILITY NAME GOES HERE. For more information on these results and to learn how Olympus can do more for you, please contact NAME GOES HERE at EMAIL GOES HERE or at PHONE GOES HERE";
-        CGSize introTextSize = [introText sizeWithFont:contentFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
+        NSString* introText = @"Investing in Olympus technology is an important decision. Investing smarter in today's economy is a necessary one. That's why we've developed the Olympus EUS Value Calculator. EUS can be a compelling business proposition and major addition to your existing GI portfolio. In an effort to assist our current and prospective customers with their own analyses, Olympus has developed a flexible and tailored EUS Value Calculator. Please keep in mind the following Olympus points when performing your analysis:\n\n\u2022 Olympus offers improved B-mode imaging capability, redesigned forceps, NBI and detachable cable\n\u2022 The ProSound F75 is Olympus' premier platform which offers our best image quality\n\u2022 The EU-ME1 is Olympus' most versatile processor\n\u2022 Olympus quality is backed by 510K FDA regulations\n\u2022 Flexible financial options are available and can be tailored to meet your needs\n\u2022 Olympus University offers accredited training courses at no charge (value ~ $300/course)\n\u2022 Olympus offers 24/7 technical support\n\u2022 Our customers can utilize web portals for repair history and equipment information\n\u2022 Our broad Field Support Team is available to serve your needs\n\nThis calculator illustrates how EUS can generate downstream revenue and provide solid financial returns based on specific investment, cost and revenue assumptions.  All relevant information to your current business situation is included on the \"Input\" page. Remember, this tool is designed to be flexible and to take into account your unique situation in terms of procedure volume, revenue, costs and the value of Olympus services that you plan to utilize going forward.\n\nThank you for your time and interest in Olympus' products and solutions. At Olympus, we appreciate the opportunity to partner with our customers to provide the most advanced and efficient care to your patients. We look forward to doing business with you.\n\nBest Regards\n\nEndoscopy Account Manager";
+        CGSize introTextSize = [introText sizeWithFont:contentFont constrainedToSize:CGSizeMake(pageSize.width-40, pageSize.height) lineBreakMode:NSLineBreakByWordWrapping];
         CGRect introTextFrame = CGRectMake(2*kBorderInset-2*kMarginInset, 20.0, introTextSize.width, introTextSize.height);
         textColor = [UIColor blackColor];
-        [self drawText:introText :introTextFrame :contentFont:textColor:1];
+        [self drawText:introText :introTextFrame :contentFont:textColor:0];
+        
+        UIGraphicsBeginPDFPageWithInfo(CGRectMake(0, 0, pageSize.width, pageSize.height), nil);
         
         //add the title bar - give it a color, start point, end point and a width (thickness)
         UIColor* titleBarBGColor = [colorManager setColor:8 :16 :123];
-        CGPoint titleBarStartPoint = CGPointMake(kMarginInset + kBorderInset, introTextFrame.origin.y + introTextFrame.size.height + 40.0);
-        CGPoint titleBarEndPoint = CGPointMake(pageSize.width - 2*kMarginInset -2*kBorderInset, introTextFrame.origin.y + introTextFrame.size.height + 40.0);
+        CGPoint titleBarStartPoint = CGPointMake(kMarginInset + kBorderInset, kBorderInset+20.0);
+        CGPoint titleBarEndPoint = CGPointMake(pageSize.width - kBorderInset, kBorderInset+20.0);
         float lineWidth = kLineWidth*20.0;
         [self drawLine:lineWidth:titleBarBGColor:titleBarStartPoint:titleBarEndPoint];
         
         //add the title
         NSString* pageTitle = @"Downstream Revenue Model";
         CGSize titleSize = [pageTitle sizeWithFont:headerFont];
-        CGRect pageTitleFrame = CGRectMake((pageSize.width/2)-(titleSize.width/2), introTextFrame.origin.y + introTextFrame.size.height + 30.0, titleSize.width, titleSize.height);
+        CGRect pageTitleFrame = CGRectMake((pageSize.width/2)-(titleSize.width/2), kBorderInset+10, titleSize.width, titleSize.height);
         textColor = [UIColor whiteColor];
         [self drawText:pageTitle :pageTitleFrame :headerFont:textColor:1];
         
@@ -130,8 +132,8 @@
         
         //build the t1 header bar
         UIColor* headerBarTable1Color = [colorManager setColor:186.0 :209.0 :254.0];
-        CGPoint headerBarStartPoint = CGPointMake(kMarginInset + kBorderInset, pageTitleFrame.origin.y + pageTitleFrame.size.height+10);
-        CGPoint headerBarEndPoint = CGPointMake(pageSize.width - 2*kMarginInset, pageTitleFrame.origin.y + pageTitleFrame.size.height+10);
+        CGPoint headerBarStartPoint = CGPointMake(kMarginInset + kBorderInset, pageTitleFrame.origin.y + pageTitleFrame.size.height+50);
+        CGPoint headerBarEndPoint = CGPointMake(pageSize.width - 2*kMarginInset, pageTitleFrame.origin.y + pageTitleFrame.size.height+50);
         lineWidth = kLineWidth*60;
         [self drawLine:lineWidth:headerBarTable1Color:headerBarStartPoint:headerBarEndPoint];
         
@@ -413,7 +415,7 @@
         
         //header
         NSString* strAssumptionsHeader = @"Assumptions - EUS Value Calculator";
-        CGSize assumptionsHeaderSize = [strAssumptionsHeader sizeWithFont:headerFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
+        CGSize assumptionsHeaderSize = [strAssumptionsHeader sizeWithFont:headerFont constrainedToSize:CGSizeMake(pageSize.width, 100.0) lineBreakMode:NSLineBreakByWordWrapping];
         CGRect assumptionsHeaderFrame = CGRectMake(kMarginInset+kBorderInset, kMarginInset+kBorderInset, pageSize.width-(kMarginInset+kBorderInset*2), assumptionsHeaderSize.height);
         textColor = [colorManager setColor:8 :16 :123];
         [self drawText:strAssumptionsHeader:assumptionsHeaderFrame:headerFont:textColor:1];
@@ -427,8 +429,8 @@
         
         //build the assumption table header bar
         UIColor* headerBarColor = [colorManager setColor:66.0:66.0 :66.0];
-        headerBarStartPoint = CGPointMake(kMarginInset + kBorderInset, assumpIntroTextFrame.origin.y + assumpIntroTextFrame.size.height + 15.0);
-        headerBarEndPoint = CGPointMake(pageSize.width - 2*kMarginInset, assumpIntroTextFrame.origin.y + assumpIntroTextFrame.size.height + 15.0);
+        headerBarStartPoint = CGPointMake(kMarginInset + kBorderInset, assumptionsHeaderFrame.origin.y  + assumptionsHeaderFrame.size.height + 50.0);
+        headerBarEndPoint = CGPointMake(pageSize.width - 2*kMarginInset, assumptionsHeaderFrame.origin.y  + assumptionsHeaderFrame.size.height + 50.0);
         lineWidth = kLineWidth*20;
         [self drawLine:lineWidth:headerBarColor:headerBarStartPoint:headerBarEndPoint];
         
@@ -436,7 +438,7 @@
         NSArray* arrAssumptionHeaders = [[NSArray alloc] initWithObjects:@"Question", @"Assumption", @"Source", nil];
         
         
-        headerY = assumpIntroTextFrame.origin.y + assumpIntroTextFrame.size.height+10.0;
+        headerY = assumptionsHeaderFrame.origin.y  + assumptionsHeaderFrame.size.height + 45.0;
         NSMutableArray* cellWidths = [[NSMutableArray alloc] init];
         for(int i=0; i<arrAssumptionHeaders.count; i++) {
             

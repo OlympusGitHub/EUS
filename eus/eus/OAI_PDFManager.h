@@ -25,6 +25,8 @@
 }
 
 @property (nonatomic, retain) NSString* strTableTitle;
+@property (nonatomic, retain) NSString* strFacilityName;
+@property (nonatomic, retain) NSString* strUserName;
 
 +(OAI_PDFManager* )sharedPDFManager;
 

@@ -40,6 +40,7 @@
     placedRows = [[NSMutableArray alloc] init];
     placedCells = [[NSMutableArray alloc] init];
     placedElements = [[NSMutableArray alloc] init];
+    dictAllElements = [[NSDictionary alloc] init];
     
     calcElements =[[NSMutableArray alloc] init];
     resultsFields =[[NSMutableArray alloc] init];
@@ -55,6 +56,8 @@
     
     //set up the results dictionary
     results = [[NSMutableDictionary alloc] init];
+    
+    UIColor* olympusBlue = [colorManager setColor:8 :16 :123];
     
     /*************************************
      REGISTER FOR NOTIFICATIONS FOR KEYBOARD
@@ -101,7 +104,7 @@
     UIImage* imgReset = [UIImage imageNamed:@"btnReload.png"];
     UIButton* btnReset = [[UIButton alloc] initWithFrame:CGRectMake(btnAccount.frame.origin.x+btnAccount.frame.size.width + 20.0, 2.0, imgReset.size.width, imgReset.size.height)];
     [btnReset setImage:imgReset forState:UIControlStateNormal];
-    [btnReset addTarget:self action:@selector(resetForm:) forControlEvents:UIControlEventTouchUpInside];
+    [btnReset addTarget:self action:@selector(resetAll:) forControlEvents:UIControlEventTouchUpInside];
     [btnReset setBackgroundColor:[UIColor clearColor]];
     [topBar addSubview:btnReset];
     
@@ -116,8 +119,6 @@
     
     [self.view addSubview:topBar];
     
-    
-    
     /************************************
      WRAPPER
      ************************************/
@@ -129,6 +130,16 @@
     /*************************************
      TITLE IMAGE
      *************************************/
+    
+    NSString* strTitle = @"EUS Value Calculator";
+    CGSize strSize = [strTitle sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:48.0]];
+    
+    UILabel* lblTitle = [[UILabel alloc] initWithFrame:CGRectMake((self.view.frame.size.width/2)-(strSize.width/2), 250.0, strSize.width, strSize.height)];
+    lblTitle.text = strTitle;
+    lblTitle.textColor =  olympusBlue;
+    lblTitle.font = [UIFont fontWithName:@"Helvetica-Bold" size:48.0];
+    lblTitle.backgroundColor = [UIColor clearColor];
+    [objectWrapper addSubview:lblTitle];
     
     UIImage* imgTitle = [UIImage imageNamed:@"imgTitle.png"];
     UIImageView* imgTitleView = [[UIImageView alloc] initWithImage:imgTitle];
@@ -310,26 +321,24 @@
             UIView* sectionWrapper = [[UIView alloc] initWithFrame:CGRectMake(20.0, sectionY, thisView.frame.size.width-40.0, thisView.frame.size.height)];
             [thisView addSubview:sectionWrapper];
             
-            
-            
-            btnCalculate = [UIButton buttonWithType:UIButtonTypeCustom];
+            btnCalculate = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [btnCalculate setFrame:CGRectMake(23.0, lblThisSection.frame.origin.y + lblThisSection.frame.size.height + 10.0, 100.0, 30.0)];
             [btnCalculate addTarget:self action:@selector(calculate) forControlEvents:UIControlEventTouchUpInside];
-            btnCalculate.layer.cornerRadius = 8.0f;
-            btnCalculate.backgroundColor = [colorManager setColor:8.0 :16.0 :123.0];
             [btnCalculate setTitle:@"Calculate" forState:UIControlStateNormal];
-            btnCalculate.titleLabel.textColor = [UIColor whiteColor];
-            btnCalculate.titleLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20.0];
+            btnCalculate.titleLabel.textColor = [UIColor blackColor];
+            btnCalculate.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:16.0];
             btnCalculate.titleEdgeInsets = UIEdgeInsetsMake(5, 2, 5, 0);
-            
-            //reset the button location
-            CGRect btnCalculateFrame = btnCalculate.frame;
-            btnCalculateFrame.origin.x = 23.0;
-            btnCalculateFrame.origin.y = lblThisSection.frame.origin.y + lblThisSection.frame.size.height + 10.0;
-            btnCalculateFrame.size.width = 100.0;
-            btnCalculateFrame.size.height = 30.0;
-            btnCalculate.frame = btnCalculateFrame;
-            
             [thisView addSubview:btnCalculate];
+            
+            UIButton* btnSectionReset = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+            [btnSectionReset setFrame:CGRectMake(btnCalculate.frame.origin.x + btnCalculate.frame.size.width + 15.0, btnCalculate.frame.origin.y, 100.0, 30.0)];
+            [btnSectionReset setTitle:@"Reset" forState:UIControlStateNormal];
+            [btnSectionReset addTarget:self action:@selector(resetFormSection:) forControlEvents:UIControlEventTouchUpInside];
+            btnSectionReset.titleLabel.textColor = [UIColor blackColor];
+            btnSectionReset.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:16.0];
+            btnSectionReset.titleEdgeInsets = UIEdgeInsetsMake(5, 2, 5, 0);
+            [btnSectionReset setMySection:thisSectionTitle];
+            [thisView addSubview:btnSectionReset];
             
             [self buildSections:sectionProperties:sectionWrapper];
             
@@ -388,9 +397,7 @@
         
         [svCalculatorScroll addSubview:thisView];
     }
-    
-    
-    
+        
     /**************************
      RESULTS
      ***************************/
@@ -421,7 +428,7 @@
     
     //the downstream model table title bar
     UILabel* lblDownstreamModel = [[UILabel alloc] initWithFrame:CGRectMake(20.0, scCalcOptions.frame.origin.y + scCalcOptions.frame.size.height + 20.0, vResults.frame.size.width-40.0, 40.0)];
-    lblDownstreamModel.text = @"Downstream Revenue Model";
+    lblDownstreamModel.text = @"Downstream Revenue";
     lblDownstreamModel.textColor = [UIColor whiteColor];
     lblDownstreamModel.backgroundColor = [colorManager setColor:8 :16 :123];
     lblDownstreamModel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20.0];
@@ -632,7 +639,7 @@
      EMAIL SETUP SCREEN
      *************************************/
     
-    vMailOptions = [[UIView alloc] initWithFrame:CGRectMake(0.0, -240.0, self.view.frame.size.width, 240.0)];
+    vMailOptions = [[UIView alloc] initWithFrame:CGRectMake(0.0, -240.0, self.view.frame.size.width, 280.0)];
     vMailOptions.backgroundColor = [UIColor whiteColor];
     [vMailOptions.layer setShadowColor:[UIColor blackColor].CGColor];
     [vMailOptions.layer setShadowOpacity:0.8];
@@ -655,27 +662,29 @@
     
     [vMailOptions addSubview:vLblBG];
     
-    /*
-     //recipient name
-     NSString* strName=  @"Recipeint Name";
+    //recipient name
+     NSString* strName=  @"Add Your Name";
      
-     txtName = [[UITextField alloc] initWithFrame:CGRectMake((vMailOptions.frame.size.width/2)-250.0, vLblBG.frame.origin.y + vLblBG.frame.size.height + 30.0, 500.0, 40.0)];
-     txtName.textColor = [colorManager setColor:66.0:66.0:66.];
-     txtName.backgroundColor = [UIColor whiteColor];
-     txtName.borderStyle = UITextBorderStyleRoundedRect;
-     txtName.font = [UIFont fontWithName:@"Helvetica" size:18.0];
-     txtName.placeholder = strName;
-     [vMailOptions addSubview:txtName];
-     */
+    txtName = [[UITextField alloc] initWithFrame:CGRectMake((vMailOptions.frame.size.width/2)-250.0, lblEmailOptions.frame.origin.y + lblEmailOptions.frame.size.height + 20.0, 500.0, 40.0)];
+    txtName.textColor = [colorManager setColor:66.0:66.0:66.];
+    txtName.backgroundColor = [UIColor whiteColor];
+    txtName.borderStyle = UITextBorderStyleRoundedRect;
+    txtName.font = [UIFont fontWithName:@"Helvetica" size:18.0];
+    txtName.placeholder = strName;
+    txtName.delegate = self;
+    txtName.tag = 701;
+    [vMailOptions addSubview:txtName];
+     
     
     //company name
     NSString* strFacility = @"Company/Facility Name";
     
-    txtFacility = [[UITextField alloc] initWithFrame:CGRectMake((vMailOptions.frame.size.width/2)-250.0, vLblBG.frame.origin.y + vLblBG.frame.size.height + 20.0, 500.0, 40.0)];
+    txtFacility = [[UITextField alloc] initWithFrame:CGRectMake((vMailOptions.frame.size.width/2)-250.0, txtName.frame.origin.y + txtName.frame.size.height + 20.0, 500.0, 40.0)];
     txtFacility.textColor = [colorManager setColor:66.0:66.0:66.];
     txtFacility.backgroundColor = [UIColor whiteColor];
     txtFacility.borderStyle = UITextBorderStyleRoundedRect;
     txtFacility.placeholder = strFacility;
+    txtFacility.tag = 702;
     txtFacility.font = [UIFont fontWithName:@"Helvetica" size:18.0];
     [vMailOptions addSubview:txtFacility];
     
@@ -911,6 +920,9 @@
     [self.view addSubview:vAccount];
     [self.view bringSubviewToFront:topBar];
     
+    //get all the initial values
+    dictAllElements = [dataManager getDataSources:svCalculatorScroll];
+    
 }
 
 #pragma mark - Build Section
@@ -936,14 +948,14 @@
         
         
         //add the table rows
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"EU-ME1", @"1", @"$0", nil]];
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"SSD-Alpha 5", @"1", @"$0", nil]];
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"SSD-Alpha 10", @"1", @"$0", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"EU-ME1", @"0", @"$0", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"SSD-Alpha 5", @"0", @"$0", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"ProSound F75", @"0", @"$0", nil]];
         
-        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UC140P-AL5", @"1", @"$0", nil]];
-        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UCT140-AL5", @"1", @"$0", nil]];
-        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UE160-AL5", @"1", @"$0", nil]];
-        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UCT180", @"1", @"$0", nil]];
+        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UC140P-AL5", @"0", @"$0", nil]];
+        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UCT140-AL5", @"0", @"$0", nil]];
+        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UE160-AL5", @"0", @"$0", nil]];
+        [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UCT180 & MAJ 1597", @"0", @"$0", nil]];
         
         [table3Data addObject:[[NSArray alloc] initWithObjects: @"Additional Equipment", @"$0", nil]];
         
@@ -988,7 +1000,7 @@
     } else if (s==2) {
         
         [thisSectionProperties setObject:@"1" forKey:@"Table Count"];
-        [thisSectionProperties setObject:@"Operating Cost" forKey:@"Section Title"];
+        [thisSectionProperties setObject:@"Operating Costs" forKey:@"Section Title"];
         [thisSectionProperties setObject:@"2, 3, 4, 5" forKey:@"Rows Needing Instructions"];
         
         NSArray* myInstructions = [[NSArray alloc] initWithObjects: stringManager.helpLaborCost, stringManager.helpServiceQuote, stringManager.helpVariableCost, stringManager.helpAdditionalCost, nil];
@@ -1025,10 +1037,10 @@
         [table1Data addObject:[[NSArray alloc] initWithObjects: @"Percentage of cases reimbursed through non-Medicare payers", @"70%", nil]];
         [table1Data addObject:[[NSArray alloc] initWithObjects: @"Medicare Facility Fee per case (does not include modifiers)", @"$927", nil]];
         [table1Data addObject:[[NSArray alloc] initWithObjects: @"Non-Medicare Facility Fee per case", @"$1,020", nil]];
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Physician Fee per case ", @"$428", nil]];
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Will a secondary provider deliver anesthesia during EUS cases?", @"YES", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Physician Fee per case ", @"$0", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Will a secondary provider deliver anesthesia during EUS cases?", @"NO", nil]];
         
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Anesthesia reimbursement per case (Facility Fee)", @"$110", nil]];
+        [table1Data addObject:[[NSArray alloc] initWithObjects: @"Anesthesia reimbursement per case (Facility Fee)", @"$0", nil]];
         
         [thisSectionProperties setObject:table1Data forKey:@"Table 1"];
         
@@ -1044,7 +1056,7 @@
     } else if (s==4) {
         
         [thisSectionProperties setObject:@"1" forKey:@"Table Count"];
-        [thisSectionProperties setObject:@"Downstream Revenue Model" forKey:@"Section Title"];
+        [thisSectionProperties setObject:@"Downstream Revenue" forKey:@"Section Title"];
         [thisSectionProperties setObject:@"Downstream, or indirect, revenue is revenue that may be generated when a patient requires additional hospital services beyond their initial presentation into the healthcare system. In this case, the EUS procedure is considered the patient’s first point of entry into the hospital. A significant percentage of EUS patients may likely require additional services from the facility, creating an indirect revenue stream that originated within the GI department but benefits the facility as a whole." forKey:@"Section Blurb"];
         [thisSectionProperties setObject:@"1, 2, 3, 4, 5, 6" forKey:@"Rows Needing Instructions"];
         
@@ -1158,6 +1170,7 @@
             tvAdditionalEquip.textColor = [colorManager setColor:66.0 :66.0 :66.0];
             tvAdditionalEquip.font = [UIFont fontWithName:@"Helvetica" size:18.0];
             tvAdditionalEquip.delegate = self;
+            
             [sectionWrapper addSubview:tvAdditionalEquip];
             
         }
@@ -1189,6 +1202,91 @@
         lastTableFrame = [self buildFrameAndRows:table1StoredData:maxTableWidth:rowX:rowY:maxLabelWidth:thisHeaderRowMaxHeight:sectionWrapper:sectionTitle:rowsNeedingInstructions:instructions];
         
     }//end sectiontitle check
+    
+}
+
+- (void) resetFormSection : (UIButton*) myButton {
+    
+    //dismiss keyboard
+    [self.view endEditing:YES];
+    
+    for(NSString* strThisKey in dictAllElements) {
+        
+        //get the element dictionary
+        NSDictionary* dictThisElement = [dictAllElements objectForKey:strThisKey];
+        
+        //get it's class
+        if([[dictThisElement objectForKey:@"Element"] isMemberOfClass:[OAI_TextField class]]) {
+            
+            //cast
+            OAI_TextField* txtThisField = (OAI_TextField*)[dictThisElement objectForKey:@"Element"];
+            
+            //get the section
+            NSString* strThisSection = txtThisField.strMySection;
+            
+            //check for match
+            if([strThisSection isEqualToString:[myButton getMySection]]) {
+                
+                //reset to original values
+                if (![txtThisField.elementName isEqualToString:@"Facility Type_1"]) { 
+                    txtThisField.text = [dictThisElement objectForKey:@"Element Value"];
+                } else {
+                    txtThisField.text = @"";
+                }
+                
+            }
+        } else if ([[dictThisElement objectForKey:@"Element"] isMemberOfClass:[OAI_Switch class]]) {
+            
+            OAI_Switch* swThisSwitch = (OAI_Switch*)[dictThisElement objectForKey:@"Element"];
+            
+            //get the section
+            NSString* strThisSection = swThisSwitch.strMySection;
+            
+            //check for match
+            if([strThisSection isEqualToString:[myButton getMySection]]) {
+                
+                int switchIndex = [[dictThisElement objectForKey:@"Element Value"] intValue];
+                
+                swThisSwitch.selectedSegmentIndex = switchIndex;
+                
+            }
+        }
+    }
+}
+
+- (void) resetAll : (UIButton*) myButton {
+    
+    //dismiss keyboard
+    [self.view endEditing:YES];
+    
+    for(NSString* strThisKey in dictAllElements) {
+        
+        //get the element dictionary
+        NSDictionary* dictThisElement = [dictAllElements objectForKey:strThisKey];
+        
+        //get it's class
+        if([[dictThisElement objectForKey:@"Element"] isMemberOfClass:[OAI_TextField class]]) {
+            
+            //cast
+            OAI_TextField* txtThisField = (OAI_TextField*)[dictThisElement objectForKey:@"Element"];
+            
+            //reset to original values
+            if (![txtThisField.elementName isEqualToString:@"Facility Type_1"]) {
+                txtThisField.text = [dictThisElement objectForKey:@"Element Value"];
+            } else {
+                txtThisField.text = @"";
+            }
+            
+        } else if ([[dictThisElement objectForKey:@"Element"] isMemberOfClass:[OAI_Switch class]]) {
+            
+            OAI_Switch* swThisSwitch = (OAI_Switch*)[dictThisElement objectForKey:@"Element"];
+            
+            int switchIndex = [[dictThisElement objectForKey:@"Element Value"] intValue];
+            
+            swThisSwitch.selectedSegmentIndex = switchIndex;
+            
+        }
+    }
     
 }
 
@@ -1535,17 +1633,20 @@
                             scSwitch.tag = 502;
                         }
                         
+                        scSwitch.strMySection = thisSection;
+                        
                         [vDataRow addSubview:scSwitch];
                         
                         [placedElements addObject:scSwitch];
+                        
                         
                     } else { 
                     
                         txtCellInput = [[OAI_TextField alloc] initWithFrame:CGRectMake(dataX, dataY, dataW, dataH)];
                         txtCellInput.text = thisCellData;
+                        txtCellInput.strMySection = thisSection;
                         txtCellInput.delegate = self;
-                    
-                    
+                                            
                         if (![thisCellLabel isEqualToString:@"Facility Type"]) {
                             txtCellInput.keyboardType = UIKeyboardTypeNumberPad;
                         }
@@ -1660,7 +1761,7 @@
             //add the net profit entry on the downstream model section
             if(r==thisTableData.count-1) {
                 
-                if ([thisSection isEqualToString:@"Downstream Revenue Model"]) {
+                if ([thisSection isEqualToString:@"Downstream Revenue"]) {
                     
                     float objX = 0.0;
                     float objY = vDataRow.frame.origin.y + vDataRow.frame.size.height + 10.0;
@@ -2415,6 +2516,8 @@
     
     myTextElement = textField;
     
+    strDefaultValue = textField.text;
+    
     if (textField.tag == 300) {
         [textField resignFirstResponder];
         [self openHospitalDropDown:textField];
@@ -2423,7 +2526,7 @@
 }
 
 - (void)textFieldDidEndEditing:(OAI_TextField *)textField {
-    
+        
     [textField resignFirstResponder];
     
     //trapping for account info text fields
@@ -2465,9 +2568,13 @@
         
         [fileManager writeToPlist:strAccountPlist :dictAccountData];
         
+    } else if (textField.tag == 701 || textField.tag == 702) {
+        
+        //do nothing
+    
     } else {
         
-        BOOL isValid;
+        BOOL isValid = YES;
 
         //if the field type requires a $, check to see if it is already formatted correctly - first character is a $ and remaining characters are numbers except for 3rd from end, could be a decimal
         if ([textField.elementNumberType isEqualToString:@"Dollar"]) {
@@ -2480,64 +2587,121 @@
                 strWorkingString = textField.text;
             }
             
-            //invoke NSScanner to clean the string of any other non-numeric characters ($, %, etc.)
-            NSScanner* scanner = [NSScanner scannerWithString:strWorkingString];
-            NSCharacterSet* numbers = [NSCharacterSet
-                                       characterSetWithCharactersInString:@"0123456789"];
-            NSMutableString* strippedString = [NSMutableString stringWithCapacity:strWorkingString.length];
-            
-            while ([scanner isAtEnd] == NO) {
-                NSString* buffer;
-                if ([scanner scanCharactersFromSet:numbers intoString:&buffer]) {
-                    [strippedString appendString:buffer];
-                    
-                } else {
-                    [scanner setScanLocation:([scanner scanLocation] + 1)];
-                }
+            //check to see if user put in just a text string
+            NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@"$.0123456789"];
+            alphaSet = [alphaSet invertedSet];
+            NSRange r = [strWorkingString rangeOfCharacterFromSet:alphaSet];
+            if (r.location != NSNotFound) {
+                isValid = NO;
             }
             
-            //convert str to decimal
-            NSDecimalNumber* decCurrency = [[NSDecimalNumber alloc] initWithString:strippedString];
+            if (textField.text == nil || [textField.text isEqualToString:@""]) {
+                isValid = NO;
+            }
             
-            //convert string to currency
-            textField.text = [self convertToCurrencyString:decCurrency];
+            
+            if (isValid) { 
+            
+                //invoke NSScanner to clean the string of any other non-numeric characters ($, %, etc.)
+                NSScanner* scanner = [NSScanner scannerWithString:strWorkingString];
+                NSCharacterSet* numbers = [NSCharacterSet
+                                       characterSetWithCharactersInString:@"0123456789"];
+                NSMutableString* strippedString = [NSMutableString stringWithCapacity:strWorkingString.length];
+            
+                while ([scanner isAtEnd] == NO) {
+                    NSString* buffer;
+                    if ([scanner scanCharactersFromSet:numbers intoString:&buffer]) {
+                        [strippedString appendString:buffer];
+                    
+                    } else {
+                        [scanner setScanLocation:([scanner scanLocation] + 1)];
+                    }
+                }
+            
+                //convert str to decimal
+                NSDecimalNumber* decCurrency = [[NSDecimalNumber alloc] initWithString:strippedString];
+            
+                //convert string to currency
+                textField.text = [self convertToCurrencyString:decCurrency];
+                
+            } else {
+                
+                textField.text = strDefaultValue;
+                
+                //alert and reset text field to $0.00;
+                UIAlertView *alert =
+                [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
+                                           message: @"You must enter a number into the text field!"
+                                          delegate: self
+                                 cancelButtonTitle: @"OK"
+                                 otherButtonTitles: nil];
+                [alert show];
+                
+            }
             
         } else if ([textField.elementNumberType isEqualToString:@"Percentage"]) {
             
+            
             //get first character and see if it is a number or $
-            BOOL isPercentSymbol = NO;
+            BOOL isValid = YES;
             NSString* strPercentage;
             
-            // Create the predicate
-            NSPredicate *myPredicate = [NSPredicate predicateWithFormat:@"SELF endswith %@", @"%"];
-            isPercentSymbol = [myPredicate evaluateWithObject:textField.text];
+            //check to see if user put in just a text string
+            NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@"%0123456789"];
+            alphaSet = [alphaSet invertedSet];
+            NSRange r = [textField.text rangeOfCharacterFromSet:alphaSet];
+            if (r.location != NSNotFound) {
+                isValid = NO;
+            }
             
+            if (textField.text == nil || [textField.text isEqualToString:@""]) {
+                isValid = NO;
+            }
             
-            //check to see if the entry is numeric
-            if (!isPercentSymbol) {
-                NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
-                NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:textField.text];
+            if (!isValid) {
+                strPercentage = strDefaultValue;
+            } else {
                 
-                isValid = [alphaNums isSupersetOfSet:inStringSet];
-                
-                if (!isValid) {
-                    strPercentage = @"0.0%";
-                } else {
+                //add percentage symbol if needed
+                if ([textField.text rangeOfString:@"%"].location != NSNotFound) {
+                    strPercentage = textField.text;
+                } else { 
                     strPercentage = [NSString stringWithFormat:@"%@%%", textField.text];
                 }
-                
-                textField.text = strPercentage;
             }
+            
+            textField.text = strPercentage;
+                
+                
         
         } else if ([textField.elementNumberType isEqualToString:@"Number"]) {
             
-            NSCharacterSet *alphaNums = [NSCharacterSet decimalDigitCharacterSet];
-            NSCharacterSet *inStringSet = [NSCharacterSet characterSetWithCharactersInString:textField.text];
+            BOOL isValid = YES;
             
-            isValid = [alphaNums isSupersetOfSet:inStringSet];
+            //check to see if user put in just a text string
+            NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
+            alphaSet = [alphaSet invertedSet];
+            NSRange r = [textField.text rangeOfCharacterFromSet:alphaSet];
+            if (r.location != NSNotFound) {
+                isValid = NO;
+            }
+            
+            if (textField.text == nil || [textField.text isEqualToString:@""]) {
+                isValid = NO;
+            }
+
             
             if (!isValid) {
-                textField.text = @"0";
+                
+                //alert and reset text field to $0.00;
+                UIAlertView *alert =
+                [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
+                                           message: @"You must enter a number into the text field!"
+                                          delegate: self
+                                 cancelButtonTitle: @"OK"
+                                 otherButtonTitles: nil];
+                [alert show];
+                textField.text = strDefaultValue;
             }
             
         }
@@ -3205,9 +3369,9 @@
         NSNumber* GFUCT140AL5_Num = [numForm numberFromString:strGFUCT140AL5_Value];
         float GFUCT140AL5_Total = GFUCT140AL5_Quantity * [GFUCT140AL5_Num floatValue];
         
-        //GF-UCT180-AL5
-        NSDictionary* dataSet_GFUCT180_Quantity = [dataElements objectForKey:@"GF-UCT180_1"];
-        NSDictionary* dataSet_GFUCT180_Value = [dataElements objectForKey:@"GF-UCT180_2"];
+        //GF-UCT180 & MAJ
+        NSDictionary* dataSet_GFUCT180_Quantity = [dataElements objectForKey:@"GF-UCT180 & MAJ 1597_1"];
+        NSDictionary* dataSet_GFUCT180_Value = [dataElements objectForKey:@"GF-UCT180 & MAJ 1597_2"];
         
         int GFUCT180_Quantity = [[dataSet_GFUCT180_Quantity objectForKey:@"Element Value"] intValue];
         //get the value
@@ -3236,19 +3400,19 @@
         float GFUE160_Total = GFUE160_Quantity * [GFUE160_Num floatValue];
         
         //SSD-Alpha 10
-        NSDictionary* dataSet_SSDAlpha10_Quantity = [dataElements objectForKey:@"SSD-Alpha 10_1"];
-        NSDictionary* dataSet_SSDAlpha10_Value = [dataElements objectForKey:@"SSD-Alpha 10_2"];
+        NSDictionary* dataSet_ProSoundF75_Quantity = [dataElements objectForKey:@"ProSound F75_1"];
+        NSDictionary* dataSet_ProSoundF75_Value = [dataElements objectForKey:@"ProSound F75_2"];
         
-        int SSDAlpha10_Quantity = [[dataSet_SSDAlpha10_Quantity objectForKey:@"Element Value"] intValue];
+        int ProSoundF75_Quantity = [[dataSet_ProSoundF75_Quantity objectForKey:@"Element Value"] intValue];
         //get the value
-        NSString* strSSDAlpha10_Value = [dataSet_SSDAlpha10_Value objectForKey:@"Element Value"];
+        NSString* strProSoundF75_Value = [dataSet_ProSoundF75_Value objectForKey:@"Element Value"];
         //strip the dollar sign from it
-        strSSDAlpha10_Value = [self stripDollarSign:strSSDAlpha10_Value];
+        strProSoundF75_Value = [self stripDollarSign:strProSoundF75_Value];
         //strip decimal points
-        strSSDAlpha10_Value = [self stripDecimalPoints:strSSDAlpha10_Value];
+        strProSoundF75_Value = [self stripDecimalPoints:strProSoundF75_Value];
         
-        NSNumber* SSDAlpha10_Num = [numForm numberFromString:strSSDAlpha10_Value];
-        float SSDAlpha10_Total = SSDAlpha10_Quantity * [SSDAlpha10_Num floatValue];
+        NSNumber* ProSoundF75_Num = [numForm numberFromString:strProSoundF75_Value];
+        float ProSoundF75_Total = ProSoundF75_Quantity * [ProSoundF75_Num floatValue];
         
         //SSD-Alpha 5
         NSDictionary* dataSet_SSDAlpha5_Quantity = [dataElements objectForKey:@"SSD-Alpha 5_1"];
@@ -3281,7 +3445,7 @@
         float AdditionalValue = [strAdditional_Num floatValue];
         
         //add all equipment totals
-        float equipmentTotal = EUME1_Total + GFUC140PAL5_Total + GFUCT140AL5_Total + GFUCT180_Total + GFUE160_Total + SSDAlpha10_Total + SSDAlpha5_Total + AdditionalValue;
+        float equipmentTotal = EUME1_Total + GFUC140PAL5_Total + GFUCT140AL5_Total + GFUCT180_Total + GFUE160_Total + ProSoundF75_Total + SSDAlpha5_Total + AdditionalValue;
         float equipmentLease = equipmentTotal/3;
                 
         //convert to NSecimal Number
@@ -3341,11 +3505,9 @@
         laborCost = [strLaborCost floatValue];
         
         float totalLaborCostYear1 = patientsAnnualYear1*laborCost;
-        float totalLaborCostYear2 = patientsAnnualYear2*laborCost;
-        float totalLaborCostYear3 = patientsAnnualYear3*laborCost;
-        
-        NSLog(@"%f::%f", patientsAnnualYear3, laborCost);
-        
+        float totalLaborCostYear2 = patientsAnnualYear2*laborCost*1.03;
+        float totalLaborCostYear3 = (patientsAnnualYear3*(laborCost*1.03))*1.03;
+                
         //convert to decimal number
         NSDecimalNumber* decTotalLaborCostYear1 = [[NSDecimalNumber alloc] initWithString:[NSString stringWithFormat:@"%f", totalLaborCostYear1]];
         NSDecimalNumber* decTotalLaborCostYear2 = [[NSDecimalNumber alloc] initWithString:[NSString stringWithFormat:@"%f", totalLaborCostYear2]];
@@ -3458,9 +3620,22 @@
         
         /*****************************TOTAL COST*************************/
         
-        float totalCostYear1 = equipmentTotal + totalLaborCostYear1 + serviceCost + variableCostPerPatientYear1 + additionalCostPerPatientYear1;
-        float totalCostYear2 = equipmentTotal + totalLaborCostYear2 + serviceCost + variableCostPerPatientYear2 + additionalCostPerPatientYear2;
-        float totalCostYear3 = equipmentTotal + totalLaborCostYear3 + serviceCost + variableCostPerPatientYear3 + additionalCostPerPatientYear3;
+        //get the equipment values
+        NSLocale *englishLocale = [[NSLocale alloc] initWithLocaleIdentifier: @"en_US"];
+        NSNumberFormatter *currencyFormatter = [[NSNumberFormatter alloc] init];
+        currencyFormatter.numberStyle = NSNumberFormatterCurrencyStyle;
+        currencyFormatter.locale = englishLocale;
+        [currencyFormatter setCurrencySymbol:@"$"];
+        [currencyFormatter setCurrencyGroupingSeparator:@","];
+        [currencyFormatter setCurrencyDecimalSeparator:@"."];
+        
+        NSNumber *equipmentYear1 = [currencyFormatter numberFromString: [results objectForKey:@"Equipment Total Year 1"]];
+        NSNumber *equipmentYear2 = [currencyFormatter numberFromString: [results objectForKey:@"Equipment Total Year 2"]];
+        NSNumber *equipmentYear3 = [currencyFormatter numberFromString: [results objectForKey:@"Equipment Total Year 3"]];
+        
+        float totalCostYear1 = [equipmentYear1 floatValue] + totalLaborCostYear1 + serviceCost + variableCostPerPatientYear1 + additionalCostPerPatientYear1;
+        float totalCostYear2 = [equipmentYear2 floatValue] + totalLaborCostYear2 + serviceCost + variableCostPerPatientYear2 + additionalCostPerPatientYear2;
+        float totalCostYear3 = [equipmentYear3 floatValue] + totalLaborCostYear3 + serviceCost + variableCostPerPatientYear3 + additionalCostPerPatientYear3;
         
         //convert to decimal number
         NSDecimalNumber* decTotalCostYear1 = [[NSDecimalNumber alloc] initWithString:[NSString stringWithFormat:@"%f", totalCostYear1]];
@@ -3483,8 +3658,8 @@
         
         
         float annualExpenditureOperatingMarginYear1 = annualRevenueOperatingMarginYear1 - totalCostYear1;
-        float annualExpenditureOperatingMarginYear2 = annualRevenueOperatingMarginYear2 - totalCostYear1;
-        float annualExpenditureOperatingMarginYear3 = annualRevenueOperatingMarginYear3 - totalCostYear1;
+        float annualExpenditureOperatingMarginYear2 = annualRevenueOperatingMarginYear2 - totalCostYear2;
+        float annualExpenditureOperatingMarginYear3 = annualRevenueOperatingMarginYear3 - totalCostYear3;
         
         //convert to decimal number
         NSDecimalNumber* decAnnualExpenditureOperatingMarginYear1 = [[NSDecimalNumber alloc] initWithString:[NSString stringWithFormat:@"%f", annualExpenditureOperatingMarginYear1]];
@@ -3869,6 +4044,42 @@
         vMailOptionsFrame.origin.y = 40.0;
     }
     
+    //check to see if the user has set up account info
+    NSString* strAccountPlist = @"UserAccount.plist";
+    NSDictionary* dictUserAccount = [fileManager readPlist:strAccountPlist];
+    
+    NSString* strUserName;
+    
+    //if account has data get user name
+    if (dictUserAccount) {
+        strUserName = [dictUserAccount objectForKey:@"User Name"];
+    }
+    
+    //if the user has stored his name
+    if (strUserName.length > 0) {
+        
+        //get the vMailOptions sub views
+        NSArray* arrMailOptionSubs = vMailOptions.subviews;
+        
+        //loop
+        for(int i=0; i<arrMailOptionSubs.count; i++) {
+            
+            //make sure it is a text field
+            if([[arrMailOptionSubs objectAtIndex:i] isMemberOfClass:[UITextField class]]) {
+                
+                //cast
+                UITextField* thisTextField = (UITextField*)[arrMailOptionSubs objectAtIndex:i];
+                
+                //check tag
+                if (thisTextField.tag == 701) {
+                    
+                    thisTextField.text = strUserName;
+                }
+            }
+        }
+    }
+
+    
     [self animateView:vMailOptions :vMailOptionsFrame];
     
 }
@@ -3883,19 +4094,18 @@
     
     //NSString* emailReicpient = txtName.text;
     NSString* recipientFacility = txtFacility.text;
-    BOOL isPDF = YES;
+    NSString* strUserName = txtName.text;
     
-    /*int selectedPDFIndex= scPDFOptions.selectedSegmentIndex;
-    
-    if (selectedPDFIndex == 0) {
-        isPDF = YES;
-    } else {
-        isPDF = NO;
-    }*/
-    
+    //get the facility
     if ([recipientFacility isEqualToString:@""] || recipientFacility == NULL) {
         isValid = NO;
         [errMsg appendString:@"You must enter a facility name.\n\n"];
+    }
+    
+    //get the user
+    if ([strUserName isEqualToString:@""] || strUserName == NULL) {
+        isValid = NO;
+        [errMsg appendString:@"You must enter your name.\n\n"];
     }
     
     if (!isValid) {
@@ -3919,7 +4129,7 @@
         //set the subject
         NSString* emailSubject = [NSString stringWithFormat:@"Olympus EUS Calculation Results for %@",facilityName];
         
-        [emailBody appendString:@"<div>Thank you for your time and interest in Olympus' products and solutions. At Olympus, we appreciate the opportunity to partner with our customers to provide the most advanced and efficient care to your patients.  We look forward to doing business with you. Below are the results of the EUS Value Calculator.</div>"];
+        [emailBody appendString:@"<div><p>Investing in Olympus technology is an important decision. Investing smarter in today's economy is a necessary one. That's why we've developed the Olympus EUS Value Calculator. EUS can be a compelling business proposition and major addition to your existing GI portfolio. In an effort to assist our current and prospective customers with their own analyses, Olympus has developed a flexible and tailored EUS Value Calculator. Please keep in mind the following Olympus points when performing your analysis:</p><ul><li>Olympus offers improved B-mode imaging capability, redesigned forceps, NBI and detachable cable</li><li>The ProSound F75 is Olympus' premier platform which offers our best image quality</li><li>The EU-ME1 is Olympus' most versatile processor</li><li>Olympus quality is backed by 510K FDA regulations</li><li>Flexible financial options are available and can be tailored to meet your needs</li><li>Olympus University offers accredited training courses at no charge (value ~ $300/course)</li><li>Olympus offers 24/7 technical support</li><li>Our customers can utilize web portals for repair history and equipment information</li><li>Our broad Field Support Team is available to serve your needs</li></ul><p>This calculator illustrates how EUS can generate downstream revenue and provide solid financial returns based on specific investment, cost and revenue assumptions.  All relevant information to your current business situation is included on the \"Input\" page. Remember, this tool is designed to be flexible and to take into account your unique situation in terms of procedure volume, revenue, costs and the value of Olympus services that you plan to utilize going forward.</p><p>Thank you for your time and interest in Olympus' products and solutions. At Olympus, we appreciate the opportunity to partner with our customers to provide the most advanced and efficient care to your patients. We look forward to doing business with you.</p><p>Best Regards</p><p>Endoscopy Account Manager</p></div>"];
         
         [emailBody appendString:@"<div style=\"margin-top: 30px;\"><table style=\"border-top:1px solid #e5eff8; border-right:1px solid #e5eff8;\"><thead><tr><th colspan=\"3\" style=\"background:#08107B; text-align:center; color:#fff; font-family: Helvetica, Arial, sans-serif; font-weight: 900; font-size: 18px;\">Downstream Revenue Model</th></tr><tr style=\"background:#bbceff;\"><th style=\"width: 200px; padding:2px\">Department</th><th style=\"width:300px; padding:2px\">EUS Cases Utilizing Services of Other Departments</th><th style=\"padding:2px\">Average Medicare Reimbursement</th></tr></thead>"];
         
@@ -4003,18 +4213,17 @@
         [emailBody appendString:@"</tbody></table></div>"];
         
         
-        if (isPDF) {
-            
-            pdfTitle = [NSString stringWithFormat:@"eusValueResults_%@.pdf", facilityName];
-            
-            if (isCashOutlay) {
-                pdfManager.strTableTitle = @"Three-Year Projection Assuming Cash Outlay";
-            } else {
-                pdfManager.strTableTitle = @"Three-Year Projection Assuming Fair Market Value Lease";
-            }
-            
-            [pdfManager makePDF:pdfTitle:results];
+        pdfTitle = [NSString stringWithFormat:@"eusValueResults_%@.pdf", facilityName];
+        pdfManager.strFacilityName = facilityName;
+        pdfManager.strUserName = strUserName;
+        
+        if (isCashOutlay) {
+            pdfManager.strTableTitle = @"Three-Year Projection Assuming Cash Outlay";
+        } else {
+            pdfManager.strTableTitle = @"Three-Year Projection Assuming Fair Market Value Lease";
         }
+        
+        [pdfManager makePDF:pdfTitle:results];
         
         //check to make sure the app can send email
         if ([MFMailComposeViewController canSendMail]) {
@@ -4033,20 +4242,18 @@
             
             [mailViewController setMessageBody:emailBody isHTML:YES];
             
-            if (isPDF) {
-                
-                //get path to pdf file
-                NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-                NSString* documentsDirectory = [paths objectAtIndex:0];
-                NSString* pdfFilePath = [documentsDirectory stringByAppendingPathComponent:pdfTitle];
-                
-                //convert pdf file to NSData
-                NSData* pdfData = [NSData dataWithContentsOfFile:pdfFilePath];
-                
-                //attach the pdf file
-                [mailViewController addAttachmentData:pdfData mimeType:@"application/pdf" fileName:pdfTitle];
-                
-            }
+            //get path to pdf file
+            NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+            NSString* documentsDirectory = [paths objectAtIndex:0];
+            NSString* pdfFilePath = [documentsDirectory stringByAppendingPathComponent:pdfTitle];
+            
+            //convert pdf file to NSData
+            NSData* pdfData = [NSData dataWithContentsOfFile:pdfFilePath];
+            
+            //attach the pdf file
+            [mailViewController addAttachmentData:pdfData mimeType:@"application/pdf" fileName:pdfTitle];
+            
+           
             
             [self presentViewController:mailViewController animated:YES completion:NULL];
             
