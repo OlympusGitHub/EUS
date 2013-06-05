@@ -1683,7 +1683,12 @@
                         } else if ([thisSection isEqualToString:@"Expected Case Volume"]) {
                             
                             if (r>1 && r<thisTableData.count-1) {
-                                txtCellInput.elementNumberType = @"Number";
+                                
+                                if ([txtCellInput.elementName rangeOfString:@"Total number of EUS patients anticipated per week"].location == NSNotFound) { 
+                                    txtCellInput.elementNumberType = @"Number";
+                                } else {
+                                    txtCellInput.elementNumberType = @"Decimal";
+                                }
                             }
                         }
                         
@@ -2659,6 +2664,16 @@
             }
             
             if (!isValid) {
+                
+                //alert and reset text field to $0.00;
+                UIAlertView *alert =
+                [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
+                                           message: @"Please enter a whole number, it will be converted to a percentage!"
+                                          delegate: self
+                                 cancelButtonTitle: @"OK"
+                                 otherButtonTitles: nil];
+                [alert show];
+
                 strPercentage = strDefaultValue;
             } else {
                 
@@ -2680,6 +2695,7 @@
             
             //check to see if user put in just a text string
             NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
+            
             alphaSet = [alphaSet invertedSet];
             NSRange r = [textField.text rangeOfCharacterFromSet:alphaSet];
             if (r.location != NSNotFound) {
@@ -2693,7 +2709,6 @@
             
             if (!isValid) {
                 
-                //alert and reset text field to $0.00;
                 UIAlertView *alert =
                 [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
                                            message: @"You must enter a number into the text field!"
@@ -2703,6 +2718,36 @@
                 [alert show];
                 textField.text = strDefaultValue;
             }
+            
+        } else if ([textField.elementNumberType isEqualToString:@"Decimal"]) {
+            
+            BOOL isValid = YES;
+            
+            NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
+            
+            alphaSet = [alphaSet invertedSet];
+            NSRange r = [textField.text rangeOfCharacterFromSet:alphaSet];
+            if (r.location != NSNotFound) {
+                isValid = NO;
+            }
+            
+            if (textField.text == nil || [textField.text isEqualToString:@""]) {
+                isValid = NO;
+            }
+            
+            
+            if (!isValid) {
+                
+                UIAlertView *alert =
+                [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
+                                           message: @"You must enter a number into the text field!"
+                                          delegate: self
+                                 cancelButtonTitle: @"OK"
+                                 otherButtonTitles: nil];
+                [alert show];
+                textField.text = strDefaultValue;
+            }
+
             
         }
                         
