@@ -3725,7 +3725,7 @@
         
         float netOperatingMarginYear1 = 0.0;
         float netOperatingMarginYear2 = annualExpenditureOperatingMarginYear1 + annualExpenditureOperatingMarginYear2;
-        float netOperatingMarginYear3 = annualExpenditureOperatingMarginYear2 + annualExpenditureOperatingMarginYear3;
+        float netOperatingMarginYear3 = netOperatingMarginYear2 + annualExpenditureOperatingMarginYear3;
         
         //convert to decimal number
         NSDecimalNumber* decNetOperatingMarginYear1 = [[NSDecimalNumber alloc] initWithString:[NSString stringWithFormat:@"%f", netOperatingMarginYear1]];
