@@ -73,6 +73,7 @@
         UIFont* contentFont = [UIFont fontWithName:@"Helvetica" size:13.0];
         UIFont* tableFont = [UIFont fontWithName:@"Helvetica" size:8.0];
         UIFont* tableFontBold = [UIFont fontWithName:@"Helvetica" size:12.0];
+        UIFont* disclaimerFont = [UIFont fontWithName:@"Helvetica" size:10.0];
         
         //set up a some constraints
         CGSize pageConstraint = CGSizeMake(pageSize.width - 2*kBorderInset-2*kMarginInset, pageSize.height - 2*kBorderInset - 2*kMarginInset);
@@ -704,6 +705,12 @@
             }
             
         }
+        
+        NSString* strDisclaimer = stringManager.disclaimer;
+        CGSize disclaimerSize = [strDisclaimer sizeWithFont:contentFont constrainedToSize:pageConstraint lineBreakMode:NSLineBreakByWordWrapping];
+        CGRect disclaimerFrame = CGRectMake(kMarginInset, cellY+40.0, pageSize.width-(kMarginInset*2), disclaimerSize.height);
+        textColor = [colorManager setColor:66.0 :66.0 :66.0];
+        [self drawText:strDisclaimer:disclaimerFrame:disclaimerFont:textColor:0];
         
         done = YES;
         

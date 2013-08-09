@@ -949,7 +949,7 @@
         
         //add the table rows
         [table1Data addObject:[[NSArray alloc] initWithObjects: @"EU-ME1", @"0", @"$0", nil]];
-        [table1Data addObject:[[NSArray alloc] initWithObjects: @"SSD-Alpha 5", @"0", @"$0", nil]];
+        //[table1Data addObject:[[NSArray alloc] initWithObjects: @"SSD-Alpha 5", @"0", @"$0", nil]];
         [table1Data addObject:[[NSArray alloc] initWithObjects: @"ProSound F75", @"0", @"$0", nil]];
         
         [table2Data addObject:[[NSArray alloc] initWithObjects: @"GF-UC140P-AL5", @"0", @"$0", nil]];
@@ -2195,7 +2195,6 @@
 
          completion:^ (BOOL finished) {
              
-                                      
              //send view to back
              [vCalculator sendSubviewToBack:vInstructions];
          }
@@ -2217,6 +2216,7 @@
     
     CGRect popOverLauncher = txtOpenDropDown.frame;
     [pvFacilities presentPopoverFromRect:popOverLauncher inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    
     
 }
 
@@ -2528,10 +2528,12 @@
         [self openHospitalDropDown:textField];
     }
     
+    //textField selectAll:self];
+    
 }
 
 - (void)textFieldDidEndEditing:(OAI_TextField *)textField {
-        
+    
     [textField resignFirstResponder];
     
     //trapping for account info text fields
@@ -2580,6 +2582,7 @@
     } else {
         
         BOOL isValid = YES;
+        NSString* strErrMsg;
 
         //if the field type requires a $, check to see if it is already formatted correctly - first character is a $ and remaining characters are numbers except for 3rd from end, could be a decimal
         if ([textField.elementNumberType isEqualToString:@"Dollar"]) {
@@ -2596,12 +2599,20 @@
             NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@"$.0123456789"];
             alphaSet = [alphaSet invertedSet];
             NSRange r = [strWorkingString rangeOfCharacterFromSet:alphaSet];
+            
             if (r.location != NSNotFound) {
                 isValid = NO;
+                strErrMsg = @"You must enter a number into the text field!";
             }
             
             if (textField.text == nil || [textField.text isEqualToString:@""]) {
                 isValid = NO;
+                strErrMsg = @"Please enter a value for this field.";
+            }
+            
+            if ([strWorkingString isEqualToString:@"$"]) {
+                isValid = NO;
+                strErrMsg = @"Please enter a value for this field.";
             }
             
             
@@ -2636,7 +2647,7 @@
                 //alert and reset text field to $0.00;
                 UIAlertView *alert =
                 [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
-                                           message: @"You must enter a number into the text field!"
+                                           message: strErrMsg
                                           delegate: self
                                  cancelButtonTitle: @"OK"
                                  otherButtonTitles: nil];
@@ -2692,6 +2703,7 @@
         } else if ([textField.elementNumberType isEqualToString:@"Number"]) {
             
             BOOL isValid = YES;
+            NSString* errMsg; 
             
             //check to see if user put in just a text string
             NSCharacterSet* alphaSet = [NSCharacterSet characterSetWithCharactersInString:@".0123456789"];
@@ -2704,6 +2716,17 @@
             
             if (textField.text == nil || [textField.text isEqualToString:@""]) {
                 isValid = NO;
+                errMsg = @"You must enter a number into the text field!";
+            }
+            
+            if ([[textField elementName] isEqualToString:@"Number of working days per year_1"]) {
+                
+                int workingDays = [textField.text intValue];
+                
+                if (workingDays > 365) {
+                    isValid = NO;
+                    errMsg = @"Number of working days cannot exceed 365";
+                }
             }
 
             
@@ -2711,7 +2734,7 @@
                 
                 UIAlertView *alert =
                 [[UIAlertView alloc] initWithTitle: @"Text Field Entry Error!"
-                                           message: @"You must enter a number into the text field!"
+                                           message: errMsg
                                           delegate: self
                                  cancelButtonTitle: @"OK"
                                  otherButtonTitles: nil];
@@ -4206,6 +4229,8 @@
         
         [emailBody appendString:[NSString stringWithFormat:@"</tbody></table></div><p style=\"font-size:12px; color:#666;\">30 percent of Downstream Reimbursement is calculated as Downstream Revenue</p>"]];
         
+        
+        
         NSString* strTableTitle;
         if (isCashOutlay) {
             strTableTitle = @"Three-Year Projection Assuming Cash Outlay";
@@ -4231,7 +4256,8 @@
         
         [emailBody appendString:[NSString stringWithFormat:@"<tr style=\"background:#ccc;\"><td style=\"padding:2px\">Total Anesthesia Fees</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td></tr>", [results objectForKey:@"Anesthesia Fee Year 1"], [results objectForKey:@"Anesthesia Fee Year 2"], [results objectForKey:@"Anesthesia Fee Year 3"]]];
         
-        [emailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"padding:2px\">Downstream Operating Margin</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td></tr>", [results objectForKey:@"Growth Year 1"], [results objectForKey:@"Growth Year 2"], [results objectForKey:@"Growth Year 3"]]];
+        //NSLog(@"%@", results);
+        [emailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"padding:2px\">Downstream Operating Margin</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td></tr>", [results objectForKey:@"Net Profit Margin Fee Year 1"], [results objectForKey:@"Net Profit Margin Fee Year 2"], [results objectForKey:@"Net Profit Margin Fee Year 3"]]];
         
         [emailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"padding:2px\">Annual Operating Margin</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td></tr>", [results objectForKey:@"Annual Revenue Operating Margin Fee Year 1"], [results objectForKey:@"Annual Revenue Operating Margin Fee Year 1"], [results objectForKey:@"Annual Revenue Operating Margin Fee Year 1"]]];
         
@@ -4256,6 +4282,8 @@
         [emailBody appendString:[NSString stringWithFormat:@"<tr><td style=\"padding:2px\">Net Operating Margin</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td><td style=\"padding:2px\">%@</td></tr>", [results objectForKey:@"Net Operating Margin Year 1"], [results objectForKey:@"Net Operating Margin Year 2"], [results objectForKey:@"Net Operating Margin Year 3"]]];
         
         [emailBody appendString:@"</tbody></table></div>"];
+        
+        [emailBody appendString:stringManager.strDisclaimerHTML];
         
         
         pdfTitle = [NSString stringWithFormat:@"eusValueResults_%@.pdf", facilityName];

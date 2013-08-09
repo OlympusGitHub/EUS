@@ -35,6 +35,7 @@
 @property (nonatomic, retain) NSString* disclaimer;
 @property (nonatomic, retain) NSMutableArray* assumptionsArray;
 @property (nonatomic, retain) NSMutableArray* reimbursementArray;
+@property (nonatomic, retain) NSString* strDisclaimerHTML;
 
 +(OAI_StringManager* )sharedStringManager;
 
